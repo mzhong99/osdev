@@ -1,6 +1,13 @@
 #include <kernel/vga.h>
+#include <kernel/io.h>
 
 #define VIDEO_MEMORY ((uint16_t *) 0x000B8000)
+
+#define VGA_CMD_PORT    0x3D4
+#define VGA_DATA_PORT   0x3D5
+
+#define VGA_HIGH_BYTE_CMD   14
+#define VGA_LOW_BYTE_CMD    15
 
 static struct vga self;
 
@@ -48,6 +55,7 @@ static void vga_advance_row()
     }
 }
 
+
 void vga_init(void)
 {
     self.row = 0;
@@ -65,6 +73,16 @@ void vga_init(void)
     vga_display_buffer();
 }
 
+static void vga_move_cursor(uint16_t row, uint16_t col)
+{
+    uint16_t position = row * VGA_COLS + col;
+
+    io_sendbyte(VGA_CMD_PORT, VGA_HIGH_BYTE_CMD);
+    io_sendbyte(VGA_DATA_PORT, (position >> 8) & 0xFF);
+    io_sendbyte(VGA_CMD_PORT, VGA_LOW_BYTE_CMD);
+    io_sendbyte(VGA_DATA_PORT, (position & 0xFF));
+}
+
 static void vga_putchar(char c)
 {
     switch (c)
@@ -79,6 +97,7 @@ static void vga_putchar(char c)
             break;
     }
 
+    vga_move_cursor(self.row, self.col);
     vga_display_buffer();
 }
 
