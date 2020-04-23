@@ -16,5 +16,18 @@ void kernel_main(void)
     idt_init();
     vga_printf("Interrupts enabled!\n");
 
-    for (;;);
+    timers_init();
+    vga_printf("Timers initialized!\n");
+
+    struct software_timer timer = software_timer_construct_ms(1000);
+    software_timer_start(&timer);
+
+    for (;;)
+    {
+        if (software_timer_expired(&timer))
+        {
+            vga_printf("Software timer: %d -> %d\n", timer.start_ticks, timer.wait_ticks);
+            software_timer_start(&timer);
+        }
+    }
 }

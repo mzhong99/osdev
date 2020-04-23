@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define IRQ_INDEX_PIT           0
+#define IRQ_INDEX_KEYBOARD      1
+
 struct idt_ptr
 {
     uint16_t length;

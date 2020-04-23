@@ -19,7 +19,7 @@ CC = i686-elf-gcc
 AS = nasm
 
 LDFILE  = $(SRCDIR)/linker.ld
-LDFLAGS = -ffreestanding -O2 -nostdlib -lgcc
+LDFLAGS = -ffreestanding -O2 -nostdlib -static-libgcc -lgcc
 
 OBJ_FILES = $(OBJ_CFILES) $(OBJ_SFILES)
 

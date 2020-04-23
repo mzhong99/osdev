@@ -11,12 +11,14 @@ dd __interrupt%1
 
 %macro INTERRUPT_ERR 1
 __interrupt%1:
+    cli
     push %1
     jmp __interrupt_common
 %endmacro
 
 %macro INTERRUPT_NOERR 1
 __interrupt%1:
+    cli
     push 0
     push %1
     jmp __interrupt_common
@@ -24,13 +26,13 @@ __interrupt%1:
 
 %macro INTERRUPT_SYSCALL 1
 __interrupt%1:
+    cli
     push 0
     push %1
     jmp __interrupt_common
 %endmacro
 
 extern interrupts_handler
-
 __interrupt_common:
     cld
     pushad
